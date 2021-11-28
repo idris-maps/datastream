@@ -123,6 +123,14 @@ type limit = (n: number) => PipeFunction;
 type toArray = <T = any>(iterable: AsyncIterableIterator<T>) => Promise<T[]>;
 ```
 
+### find
+
+```ts
+type find = <T>(
+  func: (d: T) => boolean,
+) => (iterable: AsyncIterableIterator<T>) => Promise<T | undefined>;
+```
+
 ### reduce
 
 ```ts

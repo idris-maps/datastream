@@ -6,6 +6,19 @@ export const toArray = async <T = any>(iterable: AsyncIterableIterator<T>) => {
   return r;
 };
 
+export const find = async <T = any>(
+  func: (d: T) => boolean,
+) => {
+  return async (iterable: AsyncIterableIterator<T>) => {
+    for await (const d of iterable) {
+      if (func(d)) {
+        return d
+      }
+    }
+    return undefined
+  }
+}
+
 export const reduce = <A = any, B = any>(
   func: (r: B, d: A, i: number) => B,
   start: B,
