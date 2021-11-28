@@ -148,3 +148,22 @@ type toDsvStdout = <T = any>(
   delimiter?: string,
 ) => Promise<void>;
 ```
+
+### toNdjsonFile
+
+```ts
+type toNdjsonFile = <T = any>(
+  iterable: AsyncIterableIterator<T>,
+  path: string,
+) => Promise<void>;
+```
+
+### toDsvFile
+
+```ts
+type toDsvFile = <T = any>(
+  iterable: AsyncIterableIterator<T>,
+  path: string,
+  delimiter?: string,
+) => Promise<void>;
+```
