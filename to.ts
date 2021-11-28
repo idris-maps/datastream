@@ -31,6 +31,11 @@ const log = (d: any) => {
   }
 };
 
+const encode = (d: string) => {
+  const encoder = new TextEncoder();
+  return encoder.encode(d);
+};
+
 export const toNdjsonStdout = async <T = any>(
   iterable: AsyncIterableIterator<T>,
 ) => {
@@ -39,7 +44,33 @@ export const toNdjsonStdout = async <T = any>(
   }
 };
 
+export const toNdjsonFile = async <T = any>(
+  iterable: AsyncIterableIterator<T>,
+  path: string,
+) => {
+  let created = false;
+  for await (const d of iterable) {
+    if (!created) {
+      created = true;
+      await Deno.writeFile(path, encode(JSON.stringify(d)));
+    } else {
+      await Deno.writeFile(path, encode("\n" + JSON.stringify(d)), {
+        create: false,
+        append: true,
+      });
+    }
+  }
+};
+
 const isString = (d: any): d is string => d === String(d);
+const toDsvLine = (head: string[], delimiter: string, d: any) =>
+  head
+    .reduce((r: any[], key: string) => {
+      // @ts-ignore
+      const val = d[key];
+      return [...r, isString(val) ? `"${val}"` : val];
+    }, [])
+    .join(delimiter);
 
 export const toDsvStdout = async <T = any>(
   iterable: AsyncIterableIterator<T>,
@@ -52,15 +83,26 @@ export const toDsvStdout = async <T = any>(
       log(head.join(delimiter));
     }
     if (d) {
-      log(
-        head
-          .reduce((r: any[], key: string) => {
-            // @ts-ignore
-            const val = d[key];
-            return [...r, isString(val) ? `"${val}"` : val];
-          }, [])
-          .join(delimiter),
-      );
+      log(toDsvLine(head, delimiter, d));
+    }
+  }
+};
+
+export const toDsvFile = async <T = any>(
+  iterable: AsyncIterableIterator<T>,
+  path: string,
+  delimiter = ",",
+) => {
+  let head;
+  for await (const d of iterable) {
+    if (!head) {
+      head = Object.keys(d);
+      await Deno.writeFile(path, encode(head.join(delimiter)));
+    }
+    if (d) {
+      await Deno.writeFile(path, encode("\n" + toDsvLine(head, delimiter, d)), {
+        append: true,
+      });
     }
   }
 };
