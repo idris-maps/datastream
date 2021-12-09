@@ -12,12 +12,12 @@ export const find = async <T = any>(
   return async (iterable: AsyncIterableIterator<T>) => {
     for await (const d of iterable) {
       if (func(d)) {
-        return d
+        return d;
       }
     }
-    return undefined
-  }
-}
+    return undefined;
+  };
+};
 
 export const reduce = <A = any, B = any>(
   func: (r: B, d: A, i: number) => B,
@@ -81,7 +81,7 @@ const toDsvLine = (head: string[], delimiter: string, d: any) =>
     .reduce((r: any[], key: string) => {
       // @ts-ignore
       const val = d[key];
-      r.push(isString(val) ? `"${val}"` : val)
+      r.push(isString(val) ? `"${val}"` : val);
       return r;
     }, [])
     .join(delimiter);
