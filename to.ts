@@ -81,7 +81,8 @@ const toDsvLine = (head: string[], delimiter: string, d: any) =>
     .reduce((r: any[], key: string) => {
       // @ts-ignore
       const val = d[key];
-      return [...r, isString(val) ? `"${val}"` : val];
+      r.push(isString(val) ? `"${val}"` : val)
+      return r;
     }, [])
     .join(delimiter);
 
