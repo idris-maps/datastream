@@ -1,4 +1,4 @@
-import { readLines } from "https://deno.land/std@0.66.0/io/bufio.ts";
+import { readLines } from "./deps.ts";
 import { parseDsv, parseJson } from "./transform.ts";
 import { pipe, PipeFunction } from "./pipe.ts";
 
