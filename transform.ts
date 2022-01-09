@@ -41,16 +41,15 @@ export const limit = <T = any>(n: number) =>
     }
   };
 
-export const parseJson = pipe([
-  map((d: string) => {
+export const parseJson = async function* (iterable: AsyncIterableIterator<string>) {
+  for await (const d of iterable) {
     try {
-      return JSON.parse(d);
+      yield JSON.parse(d);
     } catch (e) {
-      return undefined;
+      // do nothing
     }
-  }),
-  filter(Boolean),
-]);
+  }
+}
 
 const splitCsvRow = (delimiter: string, line: string) => {
   let inQuote = false;

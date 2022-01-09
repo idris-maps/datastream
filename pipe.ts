@@ -4,6 +4,9 @@ export type PipeFunction = (
 
 export const pipe = <T = any>(
   func: PipeFunction[],
+  rid?: number,
 ) =>
-  (input: AsyncIterableIterator<any>): AsyncIterableIterator<T> =>
-    func.reduce((r, f) => f(r), input);
+  (input: AsyncIterableIterator<any>): { iterable: AsyncIterableIterator<T>, rid?: number } => ({
+    iterable: func.reduce((r, f) => f(r), input),
+    rid,
+  });

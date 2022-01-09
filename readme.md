@@ -12,7 +12,7 @@ Opens a file and creates a stream of lines
 type fromFile = (
   path: string,
   funcs?: PipeFunction[],
-) => Promise<AsyncIterableIterator<string>>;
+) => Promise<{ iterator: AsyncIterableIterator<any>, rid: number }>;
 ```
 
 ### fromStdin
@@ -20,7 +20,9 @@ type fromFile = (
 Reads a stream from stdin
 
 ```ts
-type fromStdin = (funcs: PipeFunction[] = []) => Promise<AsyncIterableIterator<string>>
+type fromStdin = (
+  funcs: PipeFunction[] = [],
+) => { iterator: AsyncIterableIterator<string>, rid: number }
 ```
 
 ### fromNdjsonFile
@@ -32,7 +34,7 @@ objects
 type fromNdjsonFile = (
   path: string,
   funcs?: PipeFunction[],
-) => Promise<AsyncIterableIterator<any>>;
+) => Promise<{ iterator: AsyncIterableIterator<any>, rid: number }>;
 ```
 
 ### fromNdjsonStdin
@@ -42,7 +44,7 @@ Reads and parses a stream of ndjson from stdin
 ```ts
 type fromNdjsonStdin = (
   funcs?: PipeFunction[],
-) => AsyncIterableIterator<any>;
+) => { iterator: AsyncIterableIterator<any> };
 ```
 
 ### fromDsvFile
@@ -61,7 +63,7 @@ type fromDsvFile = (
     bool?: string[]; // list of boolean columns
   },
   funcs?: PipeFunction[],
-) => Promise<AsyncIterableIterator<any>>;
+) => Promise<{ iterator: AsyncIterableIterator<any>, rid: number }>;
 ```
 
 ### fromDsvStdin
@@ -76,7 +78,7 @@ type fromDsvStdin = (
     bool?: string[]; // list of boolean columns
  },
  funcs?: PipeFunction[]
-) => <AsyncIterableIterator<any>>
+) => { iterator: AsyncIterableIterator<any> }
 ```
 
 ## Transforms
@@ -120,7 +122,7 @@ type limit = (n: number) => PipeFunction;
 ### toArray
 
 ```ts
-type toArray = <T = any>(iterable: AsyncIterableIterator<T>) => Promise<T[]>;
+type toArray = <T = any>({ iterator: AsyncIterableIterator<T>, rid?: number }) => Promise<T[]>;
 ```
 
 ### find
@@ -128,7 +130,8 @@ type toArray = <T = any>(iterable: AsyncIterableIterator<T>) => Promise<T[]>;
 ```ts
 type find = <T>(
   func: (d: T) => boolean,
-) => (iterable: AsyncIterableIterator<T>) => Promise<T | undefined>;
+) => ({ iterator: AsyncIterableIterator<T>, rid?: number }) =>
+  Promise<T | undefined>;
 ```
 
 ### reduce
@@ -137,22 +140,26 @@ type find = <T>(
 type reduce = <A = any, B = any>(
   func: (r: B, d: A, i: number) => B,
   start: B,
-) => (iterable: AsyncIterableIterator<A>) => Promise<B>;
+) => ({
+  iterator: AsyncIterableIterator<A>,
+  rid?: number,
+}) => Promise<B>;
 ```
 
 ### toNdjsonStdout
 
 ```ts
-type toNdjsonStdout = <T = any>(
-  iterable: AsyncIterableIterator<T>,
-) => Promise<void>;
+type toNdjsonStdout = <T = any>({
+  iterator: AsyncIterableIterator<T>,
+  rid?: number,
+}) => Promise<void>;
 ```
 
 ### toDsvStdout
 
 ```ts
 type toDsvStdout = <T = any>(
-  iterable: AsyncIterableIterator<T>,
+  { iterator: AsyncIterableIterator<T>, rid?: number },
   delimiter?: string,
 ) => Promise<void>;
 ```
@@ -161,7 +168,7 @@ type toDsvStdout = <T = any>(
 
 ```ts
 type toNdjsonFile = <T = any>(
-  iterable: AsyncIterableIterator<T>,
+  { iterator: AsyncIterableIterator<T>, rid?: number },
   path: string,
 ) => Promise<void>;
 ```
@@ -170,7 +177,7 @@ type toNdjsonFile = <T = any>(
 
 ```ts
 type toDsvFile = <T = any>(
-  iterable: AsyncIterableIterator<T>,
+  { iterator: AsyncIterableIterator<T>, rid?: number },
   path: string,
   delimiter?: string,
 ) => Promise<void>;

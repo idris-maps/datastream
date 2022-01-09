@@ -4,7 +4,7 @@ import { pipe, PipeFunction } from "./pipe.ts";
 
 export const fromFile = async (path: string, funcs: PipeFunction[] = []) => {
   const file = await Deno.open(path, { read: true, write: false });
-  return pipe(funcs)(readLines(file));
+  return pipe(funcs, file.rid)(readLines(file));
 };
 
 export const fromStdin = (funcs: PipeFunction[] = []) =>
@@ -15,7 +15,7 @@ export const fromNdjsonFile = async (
   funcs: PipeFunction[] = [],
 ) => {
   const file = await Deno.open(path, { read: true, write: false });
-  return pipe([parseJson, ...funcs])(readLines(file));
+  return pipe([parseJson, ...funcs], file.rid)(readLines(file));
 };
 
 export const fromNdjsonStdin = (funcs: PipeFunction[] = []) =>
@@ -27,7 +27,7 @@ export const fromDsvFile = async (
   funcs: PipeFunction[] = [],
 ) => {
   const file = await Deno.open(path, { read: true, write: false });
-  return pipe([parseDsv(config), ...funcs])(readLines(file));
+  return pipe([parseDsv(config), ...funcs], file.rid)(readLines(file));
 };
 
 export const fromDsvStdin = (
