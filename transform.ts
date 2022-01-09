@@ -41,7 +41,9 @@ export const limit = <T = any>(n: number) =>
     }
   };
 
-export const parseJson = async function* (iterable: AsyncIterableIterator<string>) {
+export const parseJson = async function* (
+  iterable: AsyncIterableIterator<string>,
+) {
   for await (const d of iterable) {
     try {
       yield JSON.parse(d);
@@ -49,7 +51,7 @@ export const parseJson = async function* (iterable: AsyncIterableIterator<string
       // do nothing
     }
   }
-}
+};
 
 const splitCsvRow = (delimiter: string, line: string) => {
   let inQuote = false;

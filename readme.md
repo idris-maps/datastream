@@ -12,7 +12,7 @@ Opens a file and creates a stream of lines
 type fromFile = (
   path: string,
   funcs?: PipeFunction[],
-) => Promise<{ iterator: AsyncIterableIterator<any>, rid: number }>;
+) => Promise<{ iterator: AsyncIterableIterator<any>; rid: number }>;
 ```
 
 ### fromStdin
@@ -34,7 +34,7 @@ objects
 type fromNdjsonFile = (
   path: string,
   funcs?: PipeFunction[],
-) => Promise<{ iterator: AsyncIterableIterator<any>, rid: number }>;
+) => Promise<{ iterator: AsyncIterableIterator<any>; rid: number }>;
 ```
 
 ### fromNdjsonStdin
@@ -63,7 +63,7 @@ type fromDsvFile = (
     bool?: string[]; // list of boolean columns
   },
   funcs?: PipeFunction[],
-) => Promise<{ iterator: AsyncIterableIterator<any>, rid: number }>;
+) => Promise<{ iterator: AsyncIterableIterator<any>; rid: number }>;
 ```
 
 ### fromDsvStdin
@@ -76,9 +76,9 @@ type fromDsvStdin = (
     delimiter?: string; // default "," (csv)
     numeric?: string[]; // list of numeric columns
     bool?: string[]; // list of boolean columns
- },
- funcs?: PipeFunction[]
-) => { iterator: AsyncIterableIterator<any> }
+  },
+  funcs?: PipeFunction[],
+) => { iterator: AsyncIterableIterator<any> };
 ```
 
 ## Transforms

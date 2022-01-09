@@ -1,17 +1,17 @@
 const closeFile = async (rid?: number) => {
   if (rid) {
     try {
-      await Deno.close(rid)
+      await Deno.close(rid);
     } catch (e) {
       // do nothing
     }
   }
-  return undefined
-}
+  return undefined;
+};
 
 interface Stream<T = any> {
-  iterable: AsyncIterableIterator<T>
-  rid?: number
+  iterable: AsyncIterableIterator<T>;
+  rid?: number;
 }
 
 export const toArray = async <T = any>({ iterable, rid }: Stream<T>) => {
@@ -19,7 +19,7 @@ export const toArray = async <T = any>({ iterable, rid }: Stream<T>) => {
   for await (const d of iterable) {
     r.push(d);
   }
-  await closeFile(rid)
+  await closeFile(rid);
   return r;
 };
 
@@ -29,14 +29,14 @@ export const find = async <T = any>(
   return async ({ iterable, rid }: Stream<T>) => {
     for await (const d of iterable) {
       if (func(d)) {
-        await closeFile(rid)
-        return d
+        await closeFile(rid);
+        return d;
       }
     }
-    await closeFile(rid)
-    return undefined
-  }
-}
+    await closeFile(rid);
+    return undefined;
+  };
+};
 
 export const reduce = <A = any, B = any>(
   func: (r: B, d: A, i: number) => B,
@@ -49,7 +49,7 @@ export const reduce = <A = any, B = any>(
       i++;
       r = func(r, d, i);
     }
-    await closeFile(rid)
+    await closeFile(rid);
     return r;
   };
 };
@@ -73,7 +73,7 @@ export const toNdjsonStdout = async <T = any>({ iterable, rid }: Stream<T>) => {
   for await (const d of iterable) {
     log(JSON.stringify(d));
   }
-  await closeFile(rid)
+  await closeFile(rid);
 };
 
 export const toNdjsonFile = async <T = any>(
@@ -92,7 +92,7 @@ export const toNdjsonFile = async <T = any>(
       });
     }
   }
-  await closeFile(rid)
+  await closeFile(rid);
 };
 
 const isString = (d: any): d is string => d === String(d);
@@ -120,7 +120,7 @@ export const toDsvStdout = async <T = any>(
       log(toDsvLine(head, delimiter, d));
     }
   }
-  await closeFile(rid)
+  await closeFile(rid);
 };
 
 export const toDsvFile = async <T = any>(
@@ -140,5 +140,5 @@ export const toDsvFile = async <T = any>(
       });
     }
   }
-  await closeFile(rid)
+  await closeFile(rid);
 };
