@@ -70,7 +70,7 @@ const closeFile = async (rid?: number) => {
 };
 
 export const toSqlite = async <T = any>(
-  { iterable, rid }: { iterable: AsyncIterableIterator<T>, rid?: number },
+  { iterable, rid }: { iterable: AsyncIterableIterator<T>; rid?: number },
   config: ToSqliteConfig,
 ) => {
   const db = new DB(config.file);
