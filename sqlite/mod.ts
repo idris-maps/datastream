@@ -11,7 +11,7 @@ interface FromSqliteConfig {
 export const fromSqlite = async (
   config: FromSqliteConfig,
   funcs: PipeFunction[] = [],
-): Promise<AsyncIterableIterator<any>> => {
+): Promise<{ iterable: AsyncIterableIterator<any> }> => {
   const db = new DB(config.file);
   const result = await db.queryEntries(config.sql, config.params);
   async function* stream() {
@@ -58,8 +58,19 @@ const prepareQuery = (
   );
 };
 
+const closeFile = async (rid?: number) => {
+  if (rid) {
+    try {
+      await Deno.close(rid);
+    } catch (e) {
+      // do nothing
+    }
+  }
+  return undefined;
+};
+
 export const toSqlite = async <T = any>(
-  iterable: AsyncIterableIterator<T>,
+  { iterable, rid }: { iterable: AsyncIterableIterator<T>, rid?: number },
   config: ToSqliteConfig,
 ) => {
   const db = new DB(config.file);
@@ -81,5 +92,8 @@ export const toSqlite = async <T = any>(
     // @ts-ignore
     await insert.execute(d);
   }
+
+  await closeFile(rid);
+
   return;
 };
